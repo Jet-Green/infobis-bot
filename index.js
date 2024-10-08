@@ -16,22 +16,43 @@ bot.onText(/\/start/, (msg) => {
   const options = {
     reply_markup: {
       keyboard: [
-        ['Услуга 1'],
-        ['Услуга 2'],
-        ['Услуга 3'],
-        ['Помощь']
+        [{ text: 'Услуга 1', callback_data: 'one' }],
+        [{ text: 'Услуга 2', callback_data: 'two' }],
+        [{ text: 'Услуга 3', callback_data: 'three' }],
       ],
       resize_keyboard: true,
-      one_time_keyboard: true
+      one_time_keyboard: false,
     }
   };
 
   bot.sendMessage(chatId, welcomeMessage, options);
 });
 
+bot.onText(/\/service_list/, (msg) => {
+  const chatId = msg.chat.id;
+
+  const welcomeMessage = "Выберите услугу:";
+
+  const options = {
+    reply_markup: {
+      keyboard: [
+        [{ text: 'Услуга 1', callback_data: 'one' }],
+        [{ text: 'Услуга 2', callback_data: 'two' }],
+        [{ text: 'Услуга 3', callback_data: 'three' }],
+      ],
+      resize_keyboard: true,
+      one_time_keyboard: false,
+    }
+  };
+
+  bot.sendMessage(chatId, welcomeMessage, options);
+})
+
 // Обработка выбора услуги
 bot.on('message', (msg) => {
   const chatId = msg.chat.id;
+  // console.log(msg);
+
 
   switch (msg.text) {
     case 'Услуга 1':
@@ -46,8 +67,6 @@ bot.on('message', (msg) => {
     case 'Помощь':
       bot.sendMessage(chatId, 'Если у вас есть вопросы, задавайте их здесь!');
       break;
-    default:
-      bot.sendMessage(chatId, 'Пожалуйста, выберите одну из услуг из меню.');
   }
 });
 
@@ -57,8 +76,8 @@ function sendInvoice(chatId, title, price) {
   const options = {
     reply_markup: {
       keyboard: [
-        ['Купить'],
-        ['Назад'],
+        [{ text: 'Купить', callback_data: 'buy' }],
+        [{ text: 'Назад', callback_data: 'back' }],
       ],
       resize_keyboard: true,
       one_time_keyboard: true
@@ -91,14 +110,14 @@ function sendInvoice(chatId, title, price) {
 
 
 // Обработка успешного платежа
-bot.on('pre_checkout_query', (query) => {
-  bot.answerPreCheckoutQuery(query.id, true /* true для подтверждения заказа */);
-});
+// bot.on('pre_checkout_query', (query) => {
+//   bot.answerPreCheckoutQuery(query.id, true /* true для подтверждения заказа */);
+// });
 
-// Подтверждение успешного платежа
-bot.on('successful_payment', (msg) => {
-  const chatId = msg.chat.id;
-  const paymentDetails = msg.successful_payment;
+// // Подтверждение успешного платежа
+// bot.on('successful_payment', (msg) => {
+//   const chatId = msg.chat.id;
+//   const paymentDetails = msg.successful_payment;
 
-  bot.sendMessage(chatId, `Спасибо за вашу оплату! Вы успешно купили: ${paymentDetails.invoice_payload}`);
-});
+//   bot.sendMessage(chatId, `Спасибо за вашу оплату! Вы успешно купили: ${paymentDetails.invoice_payload}`);
+// });
